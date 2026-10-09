@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ \"$CLAUDE_CODE_REMOTE\" = \"true\" ] && \"$CLAUDE_PROJECT_DIR\"/promo-video/audio/setup.sh >/tmp/promo-setup.log 2>&1 || true",
+            "timeout": 900
+          }
+        ]
+      }
+    ]
+  }
+}
