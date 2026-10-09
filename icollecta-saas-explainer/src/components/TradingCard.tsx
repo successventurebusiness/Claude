@@ -222,7 +222,12 @@ export const TradingCard: React.FC<{
         background: vintage
           ? "#EFE3C4"
           : `linear-gradient(${135 + rotateY * 2}deg, #D7DCEB 0%, #9AA3C2 22%, #EEF1FA 45%, #8F98B8 70%, #DCE1F0 100%)`,
-        boxShadow: "0 2px 6px rgba(0,0,0,0.35)",
+        boxShadow:
+          loader || slab
+            ? "0 2px 6px rgba(0,0,0,0.35)"
+            : glow > 0
+              ? `0 20px 50px rgba(0,0,0,0.45), 0 0 ${36 * glow}px rgba(96,238,121,${0.55 * glow}), 0 0 0 ${2 * glow}px rgba(96,238,121,${0.9 * glow})`
+              : "0 20px 50px rgba(0,0,0,0.45)",
       }}
     >
       <div
@@ -243,8 +248,8 @@ export const TradingCard: React.FC<{
             position: "absolute",
             inset: 0,
             background:
-              "repeating-linear-gradient(115deg, #ff9fd8 0px, #ffe8a3 14px, #a9ffd2 28px, #9fd9ff 42px, #d6b4ff 56px, #ff9fd8 70px)",
-            backgroundSize: "200% 200%",
+              "linear-gradient(115deg, #2a1838 0%, #4a2a52 12%, #5a4a22 24%, #1f5a3c 36%, #1c3f63 48%, #3b2462 60%, #5a2a48 72%, #4f4a1e 84%, #1f5a46 100%)",
+            backgroundSize: "300% 300%",
             backgroundPosition: `${50 + rotateY * 4}% ${50 + rotateX * 3}%`,
             mixBlendMode: "color-dodge",
             opacity: foil,
@@ -339,16 +344,7 @@ export const TradingCard: React.FC<{
           />
         </div>
       ) : (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            borderRadius: width * 0.045,
-            boxShadow: glow > 0 ? `0 0 ${36 * glow}px rgba(96,238,121,${0.55 * glow}), 0 0 0 ${2 * glow}px rgba(96,238,121,${0.9 * glow})` : "0 20px 50px rgba(0,0,0,0.45)",
-          }}
-        >
-          {cardFace}
-        </div>
+        cardFace
       )}
     </div>
   );

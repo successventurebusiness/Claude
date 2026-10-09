@@ -54,7 +54,7 @@ const Arrow: React.FC<{ x1: number; y1: number; x2: number; y2: number; p: numbe
           <path d={`M${x2 - 8} ${y2 - 6} L${x2} ${y2} L${x2 - 8} ${y2 + 6}`} stroke={C.lime} strokeWidth={2} fill="none" />
         </>
       )}
-      <text x={lx} y={ly} fill={C.lime} fontFamily="Inter" fontWeight={700} fontSize={22} textAnchor="middle" opacity={lerpF(p, [0.6, 1], [0, 1])}>
+      <text x={lx} y={ly} fill={C.lime} fontFamily="Inter" fontWeight={700} fontSize={26} textAnchor="middle" opacity={lerpF(p, [0.6, 1], [0, 1])}>
         {label}
       </text>
     </g>
@@ -123,7 +123,7 @@ export const S09_SubGrades: React.FC = () => {
                 const s = pop(frame, fps, p.at);
                 if (s <= 0.01) return null;
                 return (
-                  <div key={p.n} style={{ position: "absolute", left: p.x - 22, top: T - 64 - (1 - s) * 60, opacity: Math.min(1, s * 3) }}>
+                  <div key={p.n} style={{ position: "absolute", left: p.x - 22, top: T - 20 - (1 - s) * 60, opacity: Math.min(1, s * 3) }}>
                     <div style={{ width: 44, height: 44, borderRadius: "50% 50% 50% 0", transform: "rotate(-45deg)", background: C.lime, boxShadow: limeShadow(0.6, 14), display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <span style={{ transform: "rotate(45deg)", fontFamily: HEAD, fontWeight: 800, fontSize: 22, color: C.navy }}>{p.n}</span>
                     </div>
@@ -131,25 +131,25 @@ export const S09_SubGrades: React.FC = () => {
                 );
               })}
               {/* magnifier above the pins, looking at the top edge */}
-              <Magnifier x={lookX} y={T - 190} lookX={lookX} lookY={T + 6} radius={100} zoom={3.4} scale={magIn} opacity={magO} width={1920} height={1080}>
+              <Magnifier x={lookX} y={T - 100} lookX={lookX} lookY={T + 56} radius={85} zoom={3.4} scale={magIn} opacity={magO} width={1920} height={1080}>
                 <BigCard scale={1} x={CX} y={CY} />
               </Magnifier>
             </AbsoluteFill>
           </AbsoluteFill>
-          {/* why this grade */}
-          <div style={{ position: "absolute", left: 1300, top: 470, transform: `translateX(${(1 - why) * 220}px)`, opacity: why }}>
-            <GlassPanel width={520} height={200} title="Why this grade">
-              <div style={{ padding: "16px 24px", display: "flex", flexDirection: "column", gap: 14 }}>
-                {["Two soft touches on the upper edge - minor wear", "Corners 8.5, everything else 9.5"].map((t, i) => (
-                  <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", fontFamily: UI, fontWeight: 500, fontSize: 19, color: C.white, lineHeight: 1.3 }}>
-                    <div style={{ flexShrink: 0, width: 26, height: 26, borderRadius: 99, background: C.lime, color: C.navy, fontWeight: 700, fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>{i + 1}</div>
-                    {t}
-                  </div>
-                ))}
-              </div>
-            </GlassPanel>
-          </div>
         </AbsoluteFill>
+          {/* why this grade */}
+        <div style={{ position: "absolute", left: 1290, top: 480, transform: `translateX(${(1 - why) * 220}px)`, opacity: why }}>
+          <GlassPanel width={520} height={200} title="Why this grade">
+            <div style={{ padding: "16px 24px", display: "flex", flexDirection: "column", gap: 14 }}>
+              {["Two soft touches on the upper edge - minor wear", "Corners 8.5, everything else 9.5"].map((t, i) => (
+                <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", fontFamily: UI, fontWeight: 500, fontSize: 19, color: C.white, lineHeight: 1.3 }}>
+                  <div style={{ flexShrink: 0, width: 26, height: 26, borderRadius: 99, background: C.lime, color: C.navy, fontWeight: 700, fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>{i + 1}</div>
+                  {t}
+                </div>
+              ))}
+            </div>
+          </GlassPanel>
+        </div>
       </DirectionalBlur>
     </AbsoluteFill>
   );

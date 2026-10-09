@@ -32,7 +32,7 @@ export const S06_MarketData: React.FC = () => {
   const slide = spring({ frame, fps, config: SPRING_PANEL, durationInFrames: 14 });
   const cardX = 1180 + (520 - 1180) * slide;
   const cardRot = 10 + (8 - 10) * slide;
-  const panelIn = pop(frame, fps, 2);
+  const panelIn = pop(frame, fps, 9);
   const push = cam(frame, [0, 93], [1, 1.07]);
   const trend = lerpF(frame, [36, 52], [0, 1]);
   const badge = pop(frame, fps, 56);

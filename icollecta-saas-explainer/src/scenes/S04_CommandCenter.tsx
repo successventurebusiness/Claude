@@ -98,7 +98,7 @@ export const S04_CommandCenter: React.FC = () => {
               const jx = 80 + random(`jx${i}`) * 640;
               const jy = 120 + random(`jy${i}`) * 440;
               const jr = (random(`jr${i}`) - 0.5) * 70;
-              const p = ease(frame, [4 + i * 2, 18 + i * 2], [0, 1]);
+              const p = ease(frame, [2 + i * 1.5, 10 + i * 1.5], [0, 1]); // sorted by f26
               return (
                 <div key={i} style={{ position: "absolute", left: jx + (sx - jx) * p, top: jy + (sy - jy) * p, transform: `translate(-50%, -50%) rotate(${jr * (1 - p)}deg)` }}>
                   <TileArt t={t} w={64} />

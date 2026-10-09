@@ -1,7 +1,7 @@
 {
   "name": "icollecta-saas-explainer",
   "version": "1.0.0",
-  "description": "My Remotion video",
+  "description": "iCollecta SaaS explainer video (Remotion)",
   "repository": {},
   "license": "UNLICENSED",
   "private": true,
@@ -31,7 +31,11 @@
     "typescript": "5.9.3"
   },
   "scripts": {
-    "dev": "remotion studio",
+    "prepare-assets": "node scripts/prepare.mjs",
+    "sfx": "./scripts/build-sfx.sh",
+    "dev": "node scripts/prepare.mjs && remotion studio",
+    "check": "tsc --noEmit && bun scripts/check-timeline.ts",
+    "stills": "node scripts/prepare.mjs && SCALE=1 ./scripts/scene-stills.sh",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc"

@@ -40,8 +40,8 @@ export const S07B_SlabVision: React.FC = () => {
   const pulse = lerpF(frame, [18, 22, 30], [0, 1, 0]);
   const magIn = pop(frame, fps, 16);
   const glide = ease(frame, [20, 38], [0, 1]);
-  const mx = CARD.x + (L + CARD.w - 110 - CARD.x) * glide;
-  const my = CARD.y + (T + 110 - CARD.y) * glide;
+  const mx = CARD.x + (L + CARD.w - 46 - CARD.x) * glide;
+  const my = CARD.y + (T + 46 - CARD.y) * glide;
   const scan = lerpF(frame, [44, 48], [0, 1]);
 
   return (
