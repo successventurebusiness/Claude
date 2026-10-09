@@ -1,7 +1,7 @@
 import { ArrowLeftRight, BadgeDollarSign, LayoutGrid, ScanLine, ShoppingCart, Tag } from "lucide-react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { Gate } from "../components/Data";
-import { ParticleField } from "../components/FX";
+import { Flash, ParticleField } from "../components/FX";
 import { TradingCard } from "../components/TradingCard";
 import { cam, ease, lerpF } from "../lib/anim";
 import { C } from "../theme";
@@ -77,6 +77,8 @@ export const S13_Journey: React.FC = () => {
           </div>
         </AbsoluteFill>
       </AbsoluteFill>
+      {/* the S12C bloom clears */}
+      <Flash opacity={lerpF(frame, [0, 6], [0.95, 0])} y={300} radius={1500} />
     </AbsoluteFill>
   );
 };
