@@ -5,7 +5,7 @@
 #   out/icollecta_sfx_stem.wav          the SFX track alone
 #
 # 1. Renders a near-lossless 4K master in chunks (resumable: finished chunks are skipped).
-# 2. Renders the SFX stem as WAV.
+# 2. Mixes the SFX stem as WAV from the cue list (scripts/build-stem.ts).
 # 3. Two-pass encodes the master to TARGET_MB and muxes the stem as AAC.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -44,7 +44,7 @@ echo "concat master ($(date +%T))"
 ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i out/parts/list.txt -c copy out/master_4k.mp4
 
 echo "sfx stem ($(date +%T))"
-npx remotion render build ICollectaExplainer out/icollecta_sfx_stem.wav --codec=wav "${common[@]}"
+bun scripts/build-stem.ts out/icollecta_sfx_stem.wav  # same mix as Remotion, without rendering every frame
 
 dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 out/master_4k.mp4)
 vkbps=$(awk -v mb="$TARGET_MB" -v d="$dur" -v a="$AUDIO_KBPS" 'BEGIN { printf "%d", (mb * 8192 / d) - a - 150 }')
