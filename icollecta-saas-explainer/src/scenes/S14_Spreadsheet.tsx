@@ -14,7 +14,7 @@ const COLS = ["Card", "Year", "Condition", "Value"];
 const COL_W = [420, 220, 280, 280];
 const ROW_H = 54;
 const ROWS = [
-  ["Rookie holo FB", "2019", "NM?", "???"],
+  ["Vintage FB rookie", "2019", "NM?", "???"],
   ["Vintage dunk", "1986", "EX", "$??"],
   ["Slab #2 (check)", "2003", "9?", "???"],
   ["Comic #14 bagged", "1991", "VF", "-"],

@@ -1,4 +1,5 @@
 import { Heart, MessageCircle } from "lucide-react";
+import { SiteHeaderDesktop, SiteHeaderMobile } from "../components/SiteHeader";
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { avatar, crowd, EXTRA } from "../assets";
 import { Avatar } from "../components/Data";
@@ -17,26 +18,26 @@ const LAPTOP_SCALE = 0.5;
 const PHONE_SCALE = 0.62;
 const ORBIT = { cx: 960, cy: 600, rx: 860, tilt: 75 };
 
+/** One product tile, as on the website: card image, then a grey title line and a green View button. */
+const ProductTile: React.FC<{ i: number; imageH: number; scale?: number }> = ({ i, imageH, scale = 1 }) => (
+  <div style={{ background: C.panel, borderRadius: 18 * scale, padding: 14 * scale, border: "1px solid rgba(255,255,255,0.06)" }}>
+    <div style={{ height: imageH, borderRadius: 12 * scale, overflow: "hidden" }}>
+      <CardArt art={cardArt(EXTRA(i))} />
+    </div>
+    <div style={{ display: "flex", alignItems: "center", marginTop: 12 * scale }}>
+      <div style={{ width: 120 * scale, height: 10 * scale, borderRadius: 6, background: "rgba(255,255,255,0.3)" }} />
+      <div style={{ flex: 1 }} />
+      <span style={{ fontFamily: UI, fontSize: 15 * scale, fontWeight: 700, color: C.navy, background: C.lime, padding: `${6 * scale}px ${16 * scale}px`, borderRadius: 999 }}>View</span>
+    </div>
+  </div>
+);
+
 const LaptopScreen: React.FC<{ frame: number }> = ({ frame }) => {
   const scroll = lerpF(frame, [0, 69], [0, -40]);
   return (
     <div style={{ width: 1440, height: 900, background: C.navy, fontFamily: UI, color: C.white, position: "relative", overflow: "hidden" }}>
-      <div style={{ height: 34, background: "#0A0E22", display: "flex", alignItems: "center", gap: 60, paddingLeft: 40 - ((frame * 3) % 300), fontSize: 15, color: C.grey, whiteSpace: "nowrap" }}>
-        {Array.from({ length: 12 }).map((_, i) => (
-          <span key={i}>
-            Rookie holo <span style={{ color: C.lime }}>▲ {(2 + (i * 7) % 9).toFixed(1)}%</span>
-          </span>
-        ))}
-      </div>
       <div style={{ transform: `translateY(${scroll}px)` }}>
-        <div style={{ textAlign: "center", padding: "18px 0 10px", fontSize: 16, fontWeight: 700, letterSpacing: 6, color: C.lime }}>ONE PLATFORM, EVERY COLLECTOR.</div>
-        <div style={{ display: "flex", alignItems: "center", gap: 42, padding: "14px 60px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-          <Logo frame={0} fps={30} width={190} built />
-          <div style={{ flex: 1 }} />
-          <span style={{ fontSize: 20, fontWeight: 600 }}>SlabVision</span>
-          <span style={{ fontSize: 20, fontWeight: 600 }}>Marketplace</span>
-          <span style={{ fontSize: 20, fontWeight: 700, color: C.navy, background: C.lime, padding: "10px 26px", borderRadius: 999 }}>Sign up</span>
-        </div>
+        <SiteHeaderDesktop frame={frame} />
         <div
           style={{
             margin: "26px 60px",
@@ -58,16 +59,7 @@ const LaptopScreen: React.FC<{ frame: number }> = ({ frame }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 26, padding: "0 60px" }}>
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} style={{ background: C.panel, borderRadius: 18, padding: 14, border: "1px solid rgba(255,255,255,0.06)" }}>
-              <div style={{ height: 230, borderRadius: 12, overflow: "hidden" }}>
-                <CardArt art={cardArt(EXTRA(i))} />
-              </div>
-              <div style={{ display: "flex", alignItems: "center", marginTop: 12 }}>
-                <div style={{ width: 120, height: 10, borderRadius: 6, background: "rgba(255,255,255,0.3)" }} />
-                <div style={{ flex: 1 }} />
-                <span style={{ fontSize: 15, fontWeight: 700, color: C.navy, background: C.lime, padding: "6px 16px", borderRadius: 999 }}>View</span>
-              </div>
-            </div>
+            <ProductTile key={i} i={i} imageH={230} />
           ))}
         </div>
       </div>
@@ -75,38 +67,17 @@ const LaptopScreen: React.FC<{ frame: number }> = ({ frame }) => {
   );
 };
 
+/** The mobile website: real mobile header, then a feed of product tiles. */
 const PhoneScreen: React.FC<{ frame: number }> = ({ frame }) => (
-  <div style={{ width: 390, height: 844, background: "#0E1329", fontFamily: UI, color: C.white, padding: "70px 22px 0", boxSizing: "border-box" }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-      <Avatar who={avatar("you")} size={72} ring />
-      <div>
-        <div style={{ fontSize: 24, fontWeight: 700 }}>@you</div>
-        <div style={{ fontSize: 17, color: C.grey, fontWeight: 500 }}>212 cards · 48 trades</div>
+  <div style={{ width: 390, height: 844, background: C.navy, fontFamily: UI, color: C.white, position: "relative", overflow: "hidden" }}>
+    <div style={{ height: 50, background: "#000000" }} />
+    <SiteHeaderMobile frame={frame} />
+    <div style={{ position: "absolute", left: 0, right: 0, top: 290, bottom: 0, overflow: "hidden" }}>
+      <div style={{ padding: "14px 18px 0", display: "flex", flexDirection: "column", gap: 14, transform: `translateY(${-frame * 0.8}px)` }}>
+        {[3, 5, 1, 6].map((n) => (
+          <ProductTile key={n} i={n} imageH={250} />
+        ))}
       </div>
-    </div>
-    <div style={{ display: "flex", gap: 10, margin: "20px 0" }}>
-      {["Posts", "Collection", "Trades"].map((t, i) => (
-        <span key={t} style={{ fontSize: 15, fontWeight: 600, padding: "8px 16px", borderRadius: 999, background: i === 0 ? C.lime : "rgba(255,255,255,0.06)", color: i === 0 ? C.navy : C.white }}>
-          {t}
-        </span>
-      ))}
-    </div>
-    <div style={{ transform: `translateY(${-frame * 0.8}px)` }}>
-      {[3, 5, 1].map((n, i) => (
-        <div key={i} style={{ background: C.panel, borderRadius: 18, padding: 12, marginBottom: 14 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-            <Avatar who={crowd(i)} size={30} />
-            <div style={{ width: 110, height: 9, borderRadius: 6, background: "rgba(255,255,255,0.3)" }} />
-          </div>
-          <div style={{ height: 210, borderRadius: 12, overflow: "hidden" }}>
-            <CardArt art={cardArt(EXTRA(n))} />
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, fontSize: 15, color: C.grey }}>
-            <Heart size={20} color={C.lime} fill={i === 0 ? C.lime : "none"} /> {120 + i * 37}
-            <MessageCircle size={20} style={{ marginLeft: 12 }} /> {14 + i * 5}
-          </div>
-        </div>
-      ))}
     </div>
   </div>
 );

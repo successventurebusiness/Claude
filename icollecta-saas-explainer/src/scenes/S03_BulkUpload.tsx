@@ -10,19 +10,26 @@ import { UI } from "../fonts";
 import { cam, ease, lerpF, pop, quad } from "../lib/anim";
 import { C, limeShadow } from "../theme";
 
-const PANEL = { x: 680, y: 190, w: 1000, h: 700 };
+// Revision 1: panel centred (x = 960), source chips in a row above it.
+const PANEL = { x: 960 - 550, y: 250, w: 1100, h: 700 };
 const HEADER = 64;
 const COLS = 6;
-const CELL_W = 147;
+const CELL_W = 163;
 const CELL_H = 136;
 const GAP = 14;
 const PAD = 24;
+const CHIP_W = 300;
+const CHIP_H = 84;
+const CHIP_GAP = 28;
+const CHIP_Y = 170; // row centre
 const TILES = [
-  { label: "Photos", icon: ImageIcon, y: 400 },
-  { label: "Spreadsheet .csv", icon: Sheet, y: 540 },
-  { label: "Scan", icon: Camera, y: 680 },
-];
-const TILE_X = 110;
+  { label: "Photos", icon: ImageIcon },
+  { label: "Spreadsheet .csv", icon: Sheet },
+  { label: "Scan", icon: Camera },
+].map((t, k) => ({ ...t, x: 960 + (k - 1) * (CHIP_W + CHIP_GAP) }));
+/** Streams leave from the bottom centre of their chip. */
+const source = (k: number): [number, number] => [TILES[k].x, CHIP_Y + CHIP_H / 2];
+const arc = (from: [number, number], to: { x: number; y: number }): [number, number] => [(from[0] + to.x) / 2, Math.min(from[1], to.y) - 70];
 const COUNT = 30;
 const HERO_INDEX = 8;
 const launch = (i: number) => 8 + i * 1.6;
@@ -51,7 +58,6 @@ export const S03_BulkUpload: React.FC = () => {
   const whip = lerpF(frame, [0, 6], [40, 0]);
   const whipX = ease(frame, [0, 6], [160, 0]);
   const push = cam(frame, [0, 60], [1, 1.06]);
-  const truck = cam(frame, [0, 60], [0, 60]);
   const through = ease(frame, [60, 69], [0, 1], (t) => t * t * t);
   const scrollY = ease(frame, [38, 60], [0, CELL_H + GAP]);
   const prog = ease(frame, [10, 60], [0, 1], (t) => 1 - Math.pow(1 - t, 3));
@@ -62,7 +68,7 @@ export const S03_BulkUpload: React.FC = () => {
       <DirectionalBlur amount={whip}>
         <AbsoluteFill
           style={{
-            transform: `translateX(${whipX - truck}px) scale(${push * (1 + through * 1.2)})`,
+            transform: `translateX(${whipX}px) scale(${push * (1 + through * 1.2)})`,
             transformOrigin: `${PANEL.x + PANEL.w / 2}px ${PANEL.y + PANEL.h / 2}px`,
             filter: through > 0.05 ? `blur(${through * 14}px)` : undefined,
             opacity: 1 - through * 0.3,
@@ -74,34 +80,6 @@ export const S03_BulkUpload: React.FC = () => {
               <TradingCard art={EXTRA(k + 4)} width={120} />
             </div>
           ))}
-          {/* source tiles */}
-          {TILES.map((t, k) => {
-            const p = pop(frame, fps, 2 + k * 3);
-            const Icon = t.icon;
-            return (
-              <div
-                key={t.label}
-                style={{
-                  position: "absolute",
-                  left: TILE_X,
-                  top: t.y - 55,
-                  width: 300,
-                  height: 110,
-                  transform: `translateX(${(1 - p) * -80}px) scale(${0.9 + p * 0.1})`,
-                  opacity: Math.min(1, p * 1.5),
-                }}
-              >
-                <GlassPanel width={300} height={110} style={{ display: "flex" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 18, height: 110, padding: "0 22px" }}>
-                    <div style={{ width: 62, height: 62, borderRadius: 16, background: C.slate, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <Icon size={32} color={C.white} strokeWidth={2.2} />
-                    </div>
-                    <span style={{ fontFamily: UI, fontWeight: 600, fontSize: 24, color: C.white }}>{t.label}</span>
-                  </div>
-                </GlassPanel>
-              </div>
-            );
-          })}
           {/* panel */}
           <div style={{ position: "absolute", left: PANEL.x, top: PANEL.y }}>
             <GlassPanel
@@ -152,10 +130,9 @@ export const S03_BulkUpload: React.FC = () => {
             {Array.from({ length: COUNT }).map((_, i) => {
               const t = lerpF(frame, [launch(i), launch(i) + FLIGHT], [0, 1]);
               if (t <= 0 || t >= 1) return null;
-              const src = TILES[i % 3];
-              const from: [number, number] = [TILE_X + 300, src.y];
+              const from = source(i % 3);
               const to = cell(i, scrollY);
-              const ctrl: [number, number] = [(from[0] + to.x) / 2, Math.min(from[1], to.y) - 160];
+              const ctrl = arc(from, to);
               const pts = Array.from({ length: 10 }, (_, k) => quad(from, ctrl, [to.x, to.y], Math.max(0, t - 0.3 + (k / 9) * 0.3)));
               return <polyline key={i} points={pts.map((p) => p.join(",")).join(" ")} fill="none" stroke={C.lime} strokeWidth={3} strokeLinecap="round" opacity={0.55} style={{ filter: "drop-shadow(0 0 6px rgba(96,238,121,0.8))" }} />;
             })}
@@ -163,10 +140,9 @@ export const S03_BulkUpload: React.FC = () => {
           {Array.from({ length: COUNT }).map((_, i) => {
             const t = ease(frame, [launch(i), launch(i) + FLIGHT], [0, 1]);
             if (t <= 0) return null;
-            const src = TILES[i % 3];
-            const from: [number, number] = [TILE_X + 300, src.y];
+            const from = source(i % 3);
             const to = cell(i, scrollY);
-            const ctrl: [number, number] = [(from[0] + to.x) / 2, Math.min(from[1], to.y) - 160];
+            const ctrl = arc(from, to);
             const [x, y] = quad(from, ctrl, [to.x, to.y], t);
             const land = launch(i) + FLIGHT;
             const flash = lerpF(frame, [land, land + 2, land + 10], [0, 1, 0]);
@@ -193,6 +169,35 @@ export const S03_BulkUpload: React.FC = () => {
                 >
                   <Thumb i={i} glow={hero ? lerpF(frame, [land, land + 6], [0, 0.8]) : 0} />
                 </div>
+              </div>
+            );
+          })}
+          {/* source chips, a centred row above the panel (drawn last: cards emerge from behind them) */}
+          {TILES.map((t, k) => {
+            const p = pop(frame, fps, 2 + k * 3);
+            const Icon = t.icon;
+            return (
+              <div
+                key={t.label}
+                style={{
+                  position: "absolute",
+                  left: t.x - CHIP_W / 2,
+                  top: CHIP_Y - CHIP_H / 2,
+                  width: CHIP_W,
+                  height: CHIP_H,
+                  transform: `translateY(${(1 - p) * -40}px) scale(${0.9 + p * 0.1})`,
+                  opacity: Math.min(1, p * 1.5),
+                  zIndex: 10,
+                }}
+              >
+                <GlassPanel width={CHIP_W} height={CHIP_H} style={{ display: "flex", borderRadius: 22 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, height: CHIP_H, width: CHIP_W }}>
+                    <div style={{ width: 52, height: 52, borderRadius: 14, background: C.slate, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <Icon size={28} color={C.white} strokeWidth={2.2} />
+                    </div>
+                    <span style={{ fontFamily: UI, fontWeight: 600, fontSize: 24, color: C.white }}>{t.label}</span>
+                  </div>
+                </GlassPanel>
               </div>
             );
           })}

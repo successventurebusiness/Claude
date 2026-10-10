@@ -6,20 +6,18 @@ const has = (f: string) => PRESENT_ASSETS.includes(f);
 export type ArtKind = "hero" | "trade" | `extra-${number}`;
 
 export type ArtSource =
-  | { kind: "image"; src: string; vintageBorder: boolean }
-  | { kind: "fallback"; variant: "hero" | "trade" | "extra"; tint: number };
+  // aspect (w/h) is set for art shown at its own shape instead of 5:7
+  | { kind: "image"; src: string; vintageBorder: boolean; aspect?: number }
+  | { kind: "fallback"; variant: "extra"; tint: number };
 
-/** Card art with the spec's coded fallback when the file is missing. */
+// Revision 1: the client's vintage hero and trade cards (1200x1607, printed cream
+// border). They are always images, shown full-bleed at their own 3:4 shape.
+const VINTAGE_ASPECT = 1200 / 1607;
+
+/** Card art; extras fall back to coded artwork if their file is missing. */
 export const cardArt = (kind: ArtKind): ArtSource => {
-  if (kind === "hero") {
-    return has("cards/hero.png")
-      ? { kind: "image", src: staticFile("cards/hero.png"), vintageBorder: false }
-      : { kind: "fallback", variant: "hero", tint: 0 };
-  }
-  if (kind === "trade") {
-    return has("cards/trade.png")
-      ? { kind: "image", src: staticFile("cards/trade.png"), vintageBorder: true }
-      : { kind: "fallback", variant: "trade", tint: 0 };
+  if (kind === "hero" || kind === "trade") {
+    return { kind: "image", src: staticFile(`cards/${kind}.png`), vintageBorder: true, aspect: VINTAGE_ASPECT };
   }
   const n = Number(kind.split("-")[1]);
   const file = `cards/extra-0${n}.png`;

@@ -1,19 +1,20 @@
 import { ScanLine as ScanIcon } from "lucide-react";
 import { AbsoluteFill, Freeze, useCurrentFrame, useVideoConfig } from "remotion";
 import { Magnifier, ScanBrackets } from "../components/FX";
-import { TradingCard } from "../components/TradingCard";
+import { TradingCard, cardFaceSize } from "../components/TradingCard";
 import { Chip } from "../components/UI";
 import { cam, ease, lerpF, pop } from "../lib/anim";
 import { C } from "../theme";
 import { PRE_BTN, S07A_ShipPause } from "./S07A_ShipPause";
 
-export const CARD = { x: 960, y: 540, w: 500, h: 700 };
+// Nominal width 500 (700 tall); the 3:4 vintage face sets the real width.
+export const CARD = { x: 960, y: 540, w: cardFaceSize(500, "hero").w, h: 700, nominal: 500 };
 const L = CARD.x - CARD.w / 2;
 const T = CARD.y - CARD.h / 2;
 
 /** Fine paper-fibre texture drawn on the card face (revealed by the zoom). */
 export const Fibres: React.FC = () => (
-  <svg width="100%" height="100%" viewBox="0 0 500 700" style={{ position: "absolute", inset: 0, mixBlendMode: "overlay", opacity: 0.55 }}>
+  <svg width="100%" height="100%" viewBox="0 0 500 700" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, mixBlendMode: "overlay", opacity: 0.55 }}>
     <filter id="fibre">
       <feTurbulence type="fractalNoise" baseFrequency="0.9 0.25" numOctaves={3} seed={4} />
       <feColorMatrix type="saturate" values="0" />
@@ -24,7 +25,7 @@ export const Fibres: React.FC = () => (
 
 const CardPlane: React.FC = () => (
   <div style={{ position: "absolute", left: L, top: T }}>
-    <TradingCard art="hero" width={CARD.w} loader={false} foil={0.25} rotateZ={-1.5} face={<Fibres />} />
+    <TradingCard art="hero" width={CARD.nominal} loader={false} foil={0.25} rotateZ={-1.5} face={<Fibres />} />
   </div>
 );
 

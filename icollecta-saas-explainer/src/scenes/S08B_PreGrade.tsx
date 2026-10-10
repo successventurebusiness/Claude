@@ -2,13 +2,13 @@ import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { Gauge } from "../components/Data";
 import { PhoneMockup } from "../components/Devices";
 import { Burst } from "../components/FX";
-import { TradingCard } from "../components/TradingCard";
+import { TradingCard, cardFaceSize } from "../components/TradingCard";
 import { HEAD, UI } from "../fonts";
 import { cam, ease, lerpF } from "../lib/anim";
 import { C } from "../theme";
 import { PHONE_SCALE, Viewfinder } from "./phoneScan";
 
-export const RESULT_CARD = { x: 125, y: 92, w: 140 }; // on the 390x844 screen
+export const RESULT_CARD = { x: (390 - cardFaceSize(140, "hero").w) / 2, y: 92, w: 140 }; // on the 390x844 screen (w = nominal width)
 
 export const ResultView: React.FC<{ frame: number; cardOpacity?: number }> = ({ frame, cardOpacity = 1 }) => {
   const g = ease(frame, [4, 22], [0, 0.9]);

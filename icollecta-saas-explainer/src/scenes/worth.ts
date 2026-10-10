@@ -3,7 +3,7 @@ import { random } from "remotion";
 // Shared by S05 (tags burst into hanging dots) and S06 (dots become sale points).
 export const TAGS = [
   { x: 520, y: 380, scale: 1.2, blur: 0, phase: 0 },
-  { x: 760, y: 260, scale: 0.8, blur: 0, phase: 1.7 },
+  { x: 715, y: 222, scale: 0.8, blur: 0, phase: 1.7 }, // clears the wider 3:4 hero card and the big tag
   { x: 260, y: 860, scale: 1.8, blur: 8, phase: 3.1 },
 ] as const;
 

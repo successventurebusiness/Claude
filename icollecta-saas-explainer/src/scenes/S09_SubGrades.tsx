@@ -2,7 +2,7 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { SubgradeTile } from "../components/Data";
 import { PhoneMockup } from "../components/Devices";
 import { DirectionalBlur, Magnifier } from "../components/FX";
-import { TradingCard } from "../components/TradingCard";
+import { TradingCard, cardFaceSize } from "../components/TradingCard";
 import { GlassPanel } from "../components/UI";
 import { HEAD, UI } from "../fonts";
 import { cam, ease, lerpF, pop } from "../lib/anim";
@@ -10,7 +10,8 @@ import { C, limeShadow } from "../theme";
 import { PHONE_SCALE } from "./phoneScan";
 import { ResultView } from "./S08B_PreGrade";
 
-const CW = 443;
+const CW_NOMINAL = 443; // 620 tall; the 3:4 vintage face sets the real width
+const CW = cardFaceSize(CW_NOMINAL, "hero").w;
 const CH = 620;
 const CX = 960;
 const CY = 560;
@@ -30,16 +31,18 @@ const TILES = [
 
 /** Two tiny white wear specks on the top edge (revealed by the magnifier). */
 const Specks: React.FC = () => (
-  <svg viewBox="0 0 500 700" width="100%" height="100%" style={{ position: "absolute", inset: 0 }}>
-    <ellipse cx={500 * 0.38 - 2} cy={8} rx={3.2} ry={1.6} fill="#FFFFFF" opacity={0.95} />
-    <ellipse cx={500 * 0.6 + 3} cy={6} rx={2.4} ry={1.3} fill="#FFFFFF" opacity={0.9} />
-    <path d={`M${500 * 0.38 - 8} 3 L${500 * 0.38 + 6} 4`} stroke="#FFFFFF" strokeWidth={1} opacity={0.7} />
+  <svg viewBox="0 0 500 700" width="100%" height="100%" preserveAspectRatio="none" style={{ position: "absolute", inset: 0 }}>
+    <g style={{ filter: "drop-shadow(0 0 0.6px rgba(60,40,20,0.9))" }}>
+      <ellipse cx={500 * 0.38 - 2} cy={5} rx={4.2} ry={2.2} fill="#FFFFFF" />
+      <ellipse cx={500 * 0.6 + 3} cy={4.5} rx={3.2} ry={1.8} fill="#FFFFFF" />
+      <path d={`M${500 * 0.38 - 10} 2.5 L${500 * 0.38 + 8} 3.5`} stroke="#FFFFFF" strokeWidth={1.3} />
+    </g>
   </svg>
 );
 
 const BigCard: React.FC<{ scale: number; x: number; y: number }> = ({ scale, x, y }) => (
   <div style={{ position: "absolute", left: x - CW / 2, top: y - CH / 2, width: CW, height: CH, transform: `scale(${scale})`, transformStyle: "preserve-3d" }}>
-    <TradingCard art="hero" width={CW} loader={false} foil={0.25} glow={0.35} rotateX={-8} face={<Specks />} />
+    <TradingCard art="hero" width={CW_NOMINAL} loader={false} foil={0.25} glow={0.35} rotateX={-8} face={<Specks />} />
   </div>
 );
 
@@ -66,7 +69,7 @@ export const S09_SubGrades: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const lift = ease(frame, [0, 20], [0, 1]);
-  const startScale = 256 / CW;
+  const startScale = 256 / CW_NOMINAL;
   const scale = startScale + (1 - startScale) * lift;
   const cy = 220 + (CY - 220) * lift;
   const orbit = cam(frame, [0, 102], [-10, 8]);

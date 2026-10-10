@@ -44,9 +44,9 @@ export const SCATTER: ScatterItem[] = [
 export const itemSize = (it: ScatterItem) => {
   switch (it.type) {
     case "card":
-      return cardOuter(it.size);
+      return cardOuter(it.size, "card", it.art);
     case "slab":
-      return cardOuter(it.size, "slab");
+      return cardOuter(it.size, "slab", it.art);
     case "comic":
       return { w: it.size, h: it.size * 1.45 };
     case "sheet":

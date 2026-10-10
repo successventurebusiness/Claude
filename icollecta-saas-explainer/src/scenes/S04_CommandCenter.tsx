@@ -13,7 +13,7 @@ const PW = 820;
 const PH = 640;
 const PY = 230;
 const MID_X = 960 - PW / 2;
-const QUERY = "rookie holo";
+const QUERY = "vintage rookie";
 
 type Tile = { group: number; art?: ArtKind; kind?: "comic" | "coin" };
 const GROUPS = ["Football", "Basketball", "Comics", "Coins"];
@@ -54,7 +54,8 @@ export const S04_CommandCenter: React.FC = () => {
   const introS = ease(frame, [0, 8], [1.3, 1]);
   const introB = lerpF(frame, [0, 8], [10, 0]);
   const worldX = cam(frame, [0, 81], [600, -600]);
-  const typed = Math.max(0, Math.min(QUERY.length, Math.floor((frame - 28) / 2) + 1));
+  // types across f28-50 (about 1.6 frames per character)
+  const typed = Math.max(0, Math.min(QUERY.length, Math.floor(((frame - 28) / 22) * QUERY.length) + 1));
   const caret = Math.floor(frame / 8) % 2 === 0;
   const filter = ease(frame, [46, 54], [0, 1]);
   const lift = ease(frame, [72, 81], [0, 1], (t) => t * t);
